@@ -29,21 +29,34 @@ def enrich_row(row: dict) -> dict:
     # Try phone enrichment first
     if phone:
         try:
+            print(f"📞 Requesting phone enrichment for: {phone}")
             resp = requests.post(ENRICH_PHONE_URL, json={"phone": phone}, headers=HEADERS, timeout=30)
             if resp.status_code == 200:
-                return resp.json()["data"]
-        except requests.RequestException:
+                result = resp.json()["data"]
+                print(f"✅ Phone enrichment successful for {phone}: {len(result)} fields returned")
+                return result
+            else:
+                print(f"❌ Phone enrichment failed for {phone}: Status {resp.status_code}")
+        except requests.RequestException as e:
+            print(f"❌ Phone enrichment error for {phone}: {str(e)}")
             pass
 
     # Fall back to email enrichment
     if email:
         try:
+            print(f"📧 Requesting email enrichment for: {email}")
             resp = requests.post(ENRICH_EMAIL_URL, json={"email": email}, headers=HEADERS, timeout=30)
             if resp.status_code == 200:
-                return resp.json()["data"]
-        except requests.RequestException:
+                result = resp.json()["data"]
+                print(f"✅ Email enrichment successful for {email}: {len(result)} fields returned")
+                return result
+            else:
+                print(f"❌ Email enrichment failed for {email}: Status {resp.status_code}")
+        except requests.RequestException as e:
+            print(f"❌ Email enrichment error for {email}: {str(e)}")
             pass
 
+    print(f"⚠️  No enrichment data found for phone={phone}, email={email}")
     return {}
 
 
