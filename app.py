@@ -7,16 +7,14 @@ Required environment variables:
 
 Run with: streamlit run enrich_leads.py
 """
-
-import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import pandas as pd
 import requests
 import streamlit as st
 
-API_BASE_URL = os.environ.get("API_BASE_URL", "").rstrip("/")
-ADMIN_KEY = os.environ.get("ADMIN_KEY", "")
+API_BASE_URL = st.secrets.get("API_BASE_URL", "").rstrip("/")
+ADMIN_KEY = st.secrets.get("ADMIN_KEY", "")
 
 HEADERS = {"token": ADMIN_KEY}
 ENRICH_PHONE_URL = f"{API_BASE_URL}/intent/enrich/phone"
